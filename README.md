@@ -1,2 +1,2 @@
-# flutter-nutrition-app
+# Nutrition App
 Flutter Nutrition App
