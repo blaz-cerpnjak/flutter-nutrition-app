@@ -1,20 +1,51 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:nutrition_app/theme/theme_constants.dart';
+import 'package:nutrition_app/theme/theme_manager.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+ThemeManager _themeManager = ThemeManager();
+
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void dispose() {
+    _themeManager.removeListener(themeListener);
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _themeManager.addListener(themeListener);
+    super.initState();
+  }
+
+  themeListener() {
+    if (mounted) {
+      setState(() {
+        
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Nutrition App',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: _themeManager.themeMode,
+      home: const MyHomePage(title: 'Nutrition App'),
     );
   }
 }
@@ -29,38 +60,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void toggleTheme() {
+    if (_themeManager.themeMode == ThemeMode.dark) {
+      _themeManager.toggleTheme(false);
+    } else {
+      _themeManager.toggleTheme(true);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+        child: 
+          TextButton(
+            onPressed: () { toggleTheme(); },
+            child: Text("Switch theme"),
+          )
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Theme.of(context).backgroundColor,
+        color: Theme.of(context).bottomAppBarColor,
+        items: const [
+          Icon(Icons.home_rounded),
+          Icon(Icons.add_rounded),
+          Icon(Icons.person_rounded),
+        ]
       ),
     );
   }
