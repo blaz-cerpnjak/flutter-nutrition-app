@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrition_app/screens/add_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
@@ -49,6 +50,15 @@ class _MainScreenState extends State<MainScreen> {
               color: Theme.of(context).primaryColor,
             )
           )
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Test",
+              style: Theme.of(context).textTheme.subtitle1
+            )
+          ],
         ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,

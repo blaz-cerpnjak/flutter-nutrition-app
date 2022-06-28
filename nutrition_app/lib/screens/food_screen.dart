@@ -14,8 +14,9 @@ class _FoodScreenState extends State<FoodScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return const Scaffold(
-      body: Center(
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: const Center(
         child: Text("Food Screen"),
       )
     );
