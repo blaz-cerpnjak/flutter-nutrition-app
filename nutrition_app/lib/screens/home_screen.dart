@@ -39,7 +39,9 @@ class _HomeState extends State<HomeScreen> {
               child: InfoRow(
                 "Nutrition", 
                 "1000 cal / 2100 cal", 
-                "assets/icons/nutrition_icon.png"
+                "assets/icons/nutrition_icon.png",
+                Colors.green,
+                0.8
               ),
             ),
             const Padding(
@@ -47,7 +49,9 @@ class _HomeState extends State<HomeScreen> {
               child:  InfoRow(
                 "Water", 
                 "3 / 8 glasses", 
-                "assets/icons/water_icon.png"
+                "assets/icons/water_icon.png",
+                Colors.blue,
+                0.4
               ),
             ),
           ],
