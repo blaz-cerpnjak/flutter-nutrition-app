@@ -5,6 +5,7 @@ import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/theme_manager.dart';
 
@@ -19,6 +20,23 @@ class _MainScreenState extends State<MainScreen> {
 
   int _index = 0;
   String _title = "";
+  bool _isDark = false;
+  
+  @override
+  void initState() {
+    getTheme();
+    super.initState();
+  }
+
+  Future<void> getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isDark = prefs.getBool("isDark") ?? false;
+  }
+
+  Future<void> saveTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isDark", _isDark);
+  }
 
   void onTap(int index) {
     setState(() {
@@ -53,9 +71,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    
     final themeProvider = Provider.of<ThemeManager>(context);
-    bool isDark = themeProvider.themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -85,7 +102,7 @@ class _MainScreenState extends State<MainScreen> {
               toggleTheme(themeProvider);
             }, 
             icon: SvgPicture.asset(
-               isDark ? "assets/icons/light_mode_icon.svg" : "assets/icons/dark_mode_icon.svg",
+              _isDark ? "assets/icons/light_mode_icon.svg" : "assets/icons/dark_mode_icon.svg",
               color: Theme.of(context).primaryColor,
               width: 17,
             ),
