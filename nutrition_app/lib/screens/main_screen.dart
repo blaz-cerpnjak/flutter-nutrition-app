@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrition_app/screens/add_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
-import 'package:nutrition_app/theme/theme_manager.dart';
-import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -17,15 +14,26 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
 
-  int index = 0;
+  int _index = 0;
+  String _title = "";
 
-  void onTap(int newIndex) {
+  void onTap(int index) {
     setState(() {
-      index = newIndex;
+      _index = index;
+      switch(index) { 
+       case 0: { _title = 'Home'; } 
+       break; 
+       case 1: { _title = 'Food'; } 
+       break;
+       case 2: { _title = 'Add Meal'; } 
+       break;
+       case 3: { _title = 'Profile'; } 
+       break; 
+      } 
     });      
   }
 
-  List screens = [
+  final List _screens = const [
     HomeScreen(),
     FoodScreen(),
     AddFoodScreen(),
@@ -34,7 +42,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeManager>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,28 +50,36 @@ class _MainScreenState extends State<MainScreen> {
         leading: IconButton(
           color: Theme.of(context).primaryColor,
           onPressed: () {},
-          icon: Padding(
-            padding: const EdgeInsets.all(8),
-            child: SvgPicture.asset(
-              "assets/icons/menu_icon.svg",
-              color: Theme.of(context).primaryColor,
-            )
+          icon: SvgPicture.asset(
+            "assets/icons/menu_icon.svg",
+            color: Theme.of(context).primaryColor,
+            width: 17,
           )
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Test",
+              _title,
               style: Theme.of(context).textTheme.subtitle1
             )
           ],
         ),
+        actions: [
+          IconButton(
+            onPressed: () {}, 
+            icon: SvgPicture.asset(
+              "assets/icons/settings_icon.svg",
+              color: Theme.of(context).primaryColor,
+              width: 17,
+            ),
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: screens[index],
+      body: _screens[_index],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: index,
+        currentIndex: _index,
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Theme.of(context).backgroundColor,
         showSelectedLabels: false,
@@ -77,32 +92,32 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/home_icon.svg",
-              color: index == 0 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: index == 0 ? 17 : 15,
+              color: _index == 0 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
+              width: _index == 0 ? 17 : 15,
             ),
             label: "Home"  
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/food_icon.svg",
-              color: index == 1 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: index == 1 ? 17 : 15,
+              color: _index == 1 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
+              width: _index == 1 ? 17 : 15,
             ),
             label: "Food"  
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/add_icon.svg",
-              color: index == 2 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: index == 2 ? 17 : 15,
+              color: _index == 2 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
+              width: _index == 2 ? 17 : 15,
             ),
             label: "Add"  
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/user_icon.svg",
-              color: index == 3 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: index == 3 ? 17 : 15,
+              color: _index == 3 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
+              width: _index == 3 ? 17 : 15,
             ),
             label: "User"  
           ),
