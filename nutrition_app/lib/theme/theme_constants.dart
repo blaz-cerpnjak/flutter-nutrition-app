@@ -14,7 +14,7 @@ ThemeData lightTheme = ThemeData(
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primarySwatch: Colors.blue,
-  backgroundColor: const Color(0xff38383b),
+  backgroundColor: const Color(0xff303131),
   textTheme: GoogleFonts.firaSansTextTheme(),
   primaryColor: Colors.white,
   bottomAppBarColor: const Color(0xff222224),

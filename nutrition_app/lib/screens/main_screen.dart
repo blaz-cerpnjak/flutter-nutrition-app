@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nutrition_app/screens/add_food_screen.dart';
+import 'package:nutrition_app/screens/food_screen.dart';
+import 'package:nutrition_app/screens/home_screen.dart';
+import 'package:nutrition_app/screens/user_profile_screen.dart';
 import 'package:nutrition_app/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -12,14 +16,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
 
-  void toggleTheme(ThemeManager themeManager) {
-    if (themeManager.themeMode == ThemeMode.dark) {
-      themeManager.toggleTheme(false);
-    } else {
-      themeManager.toggleTheme(true);
-    }
-  }
-
   int index = 0;
 
   void onTap(int newIndex) {
@@ -28,13 +24,20 @@ class _MainScreenState extends State<MainScreen> {
     });      
   }
 
+  List screens = [
+    HomeScreen(),
+    FoodScreen(),
+    AddFoodScreen(),
+    UserProfileScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeManager>(context);
 
     return Scaffold(
-       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).backgroundColor,
         elevation: 0,
         leading: IconButton(
           color: Theme.of(context).primaryColor,
@@ -49,13 +52,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Center(
-        child: 
-          TextButton(
-            onPressed: () { toggleTheme(themeProvider); },
-            child: const Text("Switch theme"),
-          )
-      ),
+      body: screens[index],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
         selectedItemColor: Theme.of(context).primaryColor,
