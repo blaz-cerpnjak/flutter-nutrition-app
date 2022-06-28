@@ -57,8 +57,10 @@ class _MainScreenState extends State<MainScreen> {
   void toggleTheme(ThemeManager themeManager) {
     if (themeManager.themeMode == ThemeMode.dark) {
       themeManager.toggleTheme(false);
+      _isDark = false;
     } else {
       themeManager.toggleTheme(true);
+      _isDark = true;
     }
   }
 
