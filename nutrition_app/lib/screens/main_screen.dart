@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _index = index;
       switch(index) { 
-       case 0: { _title = 'Home'; } 
+       case 0: { _title = ''; } 
        break; 
        case 1: { _title = 'Food'; } 
        break;

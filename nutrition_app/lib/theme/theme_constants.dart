@@ -21,6 +21,12 @@ ThemeData lightTheme = ThemeData(
       fontWeight: FontWeight.w600,
       fontSize: 20,
     ),
+    subtitle2: TextStyle(
+      fontStyle: GoogleFonts.firaSans().fontStyle,
+      color: const Color(0xff38383b),
+      fontWeight: FontWeight.w500,
+      fontSize: 16,
+    ),
     bodyText1: TextStyle(
       fontStyle: GoogleFonts.firaSans().fontStyle,
       color: const Color(0xff38383b),
@@ -48,6 +54,12 @@ ThemeData darkTheme = ThemeData(
       color: Colors.white,
       fontWeight: FontWeight.w600,
       fontSize: 20,
+    ),
+    subtitle2: TextStyle(
+      fontStyle: GoogleFonts.firaSans().fontStyle,
+      color: Colors.white,
+      fontWeight: FontWeight.w500,
+      fontSize: 16,
     ),
     bodyText1: TextStyle(
       fontStyle: GoogleFonts.firaSans().fontStyle,
