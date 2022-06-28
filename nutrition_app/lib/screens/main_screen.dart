@@ -4,6 +4,9 @@ import 'package:nutrition_app/screens/add_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../theme/theme_manager.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -33,6 +36,14 @@ class _MainScreenState extends State<MainScreen> {
     });      
   }
 
+  void toggleTheme(ThemeManager themeManager) {
+    if (themeManager.themeMode == ThemeMode.dark) {
+      themeManager.toggleTheme(false);
+    } else {
+      themeManager.toggleTheme(true);
+    }
+  }
+
   final List _screens = const [
     HomeScreen(),
     FoodScreen(),
@@ -42,6 +53,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final themeProvider = Provider.of<ThemeManager>(context);
+    bool isDark = themeProvider.themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -67,9 +81,11 @@ class _MainScreenState extends State<MainScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {}, 
+            onPressed: () {
+              toggleTheme(themeProvider);
+            }, 
             icon: SvgPicture.asset(
-              "assets/icons/settings_icon.svg",
+               isDark ? "assets/icons/light_mode_icon.svg" : "assets/icons/dark_mode_icon.svg",
               color: Theme.of(context).primaryColor,
               width: 17,
             ),
