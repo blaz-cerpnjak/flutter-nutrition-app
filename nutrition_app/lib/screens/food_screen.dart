@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:hive/hive.dart';
+
+import '../models/food/food.dart';
 
 class FoodScreen extends StatefulWidget {
   const FoodScreen({Key? key}) : super(key: key);
@@ -10,6 +11,14 @@ class FoodScreen extends StatefulWidget {
 }
 
 class _FoodScreenState extends State<FoodScreen> {
+  late Box<Food> foodsBox;
+
+  @override
+  void initState() {
+    super.initState();
+    foodsBox = Hive.box("foods");
+    print(foodsBox.values);
+  }
 
   @override
   Widget build(BuildContext context) {

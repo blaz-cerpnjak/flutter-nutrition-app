@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nutrition_app/models/food/food.dart';
 import 'package:nutrition_app/screens/main_screen.dart';
 import 'package:nutrition_app/theme/theme_constants.dart';
 import 'package:nutrition_app/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(FoodAdapter());
+  await Hive.openBox<Food>('foods');
+
   runApp(const MyApp());
 }
 
