@@ -4,6 +4,7 @@ import 'package:nutrition_app/screens/add_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +22,8 @@ class _MainScreenState extends State<MainScreen> {
   int _index = 0;
   String _title = "";
   bool _isDark = false;
-  
+  PersistentTabController _controller = PersistentTabController(initialIndex: 0);
+
   @override
   void initState() {
     getTheme();
@@ -36,6 +38,12 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> saveTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("isDark", _isDark);
+  }
+
+  void onItemSelected(int index) {
+    setState(() {
+      _index = index;
+    });
   }
 
   void onTap(int index) {
@@ -64,16 +72,61 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  final List _screens = const [
+  final List<Widget> _screens = const [
     HomeScreen(),
     FoodScreen(),
     AddFoodScreen(),
     UserProfileScreen(),
   ];
 
+  
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+        PersistentBottomNavBarItem(
+            icon: SvgPicture.asset(
+              "assets/icons/home_icon.svg",
+              color: _controller.index == 0 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
+              width: 15,
+            ),
+            title: ("Home"),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: Colors.grey.withOpacity(0.5),
+        ),
+        PersistentBottomNavBarItem(
+            icon: SvgPicture.asset(
+              "assets/icons/food_icon.svg",
+              color: _controller.index == 1 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
+              width: 15,
+            ),
+            title: ("Foods"),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: Colors.grey.withOpacity(0.5),
+        ),
+        PersistentBottomNavBarItem(
+            icon: SvgPicture.asset(
+              "assets/icons/add_icon.svg",
+              color: _controller.index == 2 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),              
+              width: 15,
+            ),
+            title: ("Add Food"),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: Colors.grey.withOpacity(0.5),
+        ),
+        PersistentBottomNavBarItem(
+            icon: SvgPicture.asset(
+              "assets/icons/user_icon.svg",
+              color: _controller.index == 3 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
+              width: 15,
+            ),
+            title: ("Profile"),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: Colors.grey.withOpacity(0.5),
+        ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    
     final themeProvider = Provider.of<ThemeManager>(context);
 
     return Scaffold(
@@ -111,53 +164,37 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: _screens[_index],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Theme.of(context).backgroundColor,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        type: BottomNavigationBarType.fixed,
+      body: PersistentTabView(
+        context,
+        controller: _controller,
+        screens: _screens,
+        items: _navBarsItems(),
+        confineInSafeArea: true,
         backgroundColor: Theme.of(context).bottomAppBarColor,
-        elevation: 0,
-        onTap: onTap,
-        items: [
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/home_icon.svg",
-              color: _index == 0 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: _index == 0 ? 17 : 15,
-            ),
-            label: "Home"  
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/food_icon.svg",
-              color: _index == 1 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: _index == 1 ? 17 : 15,
-            ),
-            label: "Food"  
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/add_icon.svg",
-              color: _index == 2 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: _index == 2 ? 17 : 15,
-            ),
-            label: "Add"  
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/user_icon.svg",
-              color: _index == 3 ? Theme.of(context).primaryColor : Colors.grey.withOpacity(0.5),
-              width: _index == 3 ? 17 : 15,
-            ),
-            label: "User"  
-          ),
-        ],
-      )
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+        stateManagement: true,
+        hideNavigationBarWhenKeyboardShows: true, 
+        decoration: NavBarDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          colorBehindNavBar: Theme.of(context).bottomAppBarColor,
+        ),
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: const ItemAnimationProperties( // Navigation Bar's items animation properties.
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+        ),
+        screenTransitionAnimation: const ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle: NavBarStyle.style12,
+        onItemSelected: (index) {
+          onItemSelected(index);
+        },
+      ),
     );
   }
 
