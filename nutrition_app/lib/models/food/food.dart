@@ -4,6 +4,7 @@ part 'food.g.dart';
 @HiveType(typeId: 1)
 class Food {
   Food({
+    required this.id,
     required this.title, 
     required this.carbs,
     required this.protein,
@@ -13,21 +14,24 @@ class Food {
   });
 
   @HiveField(0)
-  String title;
+  String id;
 
   @HiveField(1)
-  double carbs;
+  String title;
 
   @HiveField(2)
-  double protein;
+  double carbs;
 
   @HiveField(3)
-  double fats;
+  double protein;
 
   @HiveField(4)
-  double calories;
+  double fats;
 
   @HiveField(5)
+  double calories;
+
+  @HiveField(6)
   double? fiber;
 
   @override

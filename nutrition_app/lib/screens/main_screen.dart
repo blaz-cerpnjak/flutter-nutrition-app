@@ -43,23 +43,17 @@ class _MainScreenState extends State<MainScreen> {
   void onItemSelected(int index) {
     setState(() {
       _index = index;
-    });
-  }
-
-  void onTap(int index) {
-    setState(() {
-      _index = index;
       switch(index) { 
        case 0: { _title = ''; } 
        break; 
        case 1: { _title = 'Food'; } 
        break;
-       case 2: { _title = 'Add Meal'; } 
+       case 2: { _title = 'Add Food'; } 
        break;
        case 3: { _title = 'Profile'; } 
        break; 
       } 
-    });      
+    });
   }
 
   void toggleTheme(ThemeManager themeManager) {
