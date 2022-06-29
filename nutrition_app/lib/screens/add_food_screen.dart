@@ -41,9 +41,9 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).bottomAppBarColor,
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(15),
-              topRight: const Radius.circular(15),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
             )
           ),
           child: Padding(
@@ -105,8 +105,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                     );
                     Navigator.pop(context);
                   },
-                  child: Text("Add"),
                   style: ElevatedButton.styleFrom(primary: Colors.green),
+                  child: const Text("Add"),
                 ),
               ],
             ),
@@ -124,6 +124,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         valueListenable: foodsBox.listenable(),
         builder: (context, Box<Food> box, _) {
           List<Food> foods = box.values.toList().cast<Food>();
+          foods.sort(((a, b) => a.toString().compareTo(b.toString())));
+          
           return ListView.builder(
             itemCount: foods.length,
             itemBuilder: (context, index) {
