@@ -28,12 +28,28 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     foodsBox.put(food.id, food);
   }
 
-  void onAddPressed() {
-    TextEditingController foodNameController = new TextEditingController();
-    TextEditingController caloriesController = new TextEditingController();
-    TextEditingController carbsController = new TextEditingController();
-    TextEditingController proteinController = new TextEditingController();
-    TextEditingController fatsController = new TextEditingController();
+  void updateFood(food) {
+    foodsBox.put(food.id, food);
+  }
+
+  void deleteFood(food) {
+    foodsBox.delete(food.id);
+  }
+
+  void openBottomSheet(Food? food) {
+    TextEditingController foodNameController = TextEditingController();
+    TextEditingController caloriesController = TextEditingController();
+    TextEditingController carbsController = TextEditingController();
+    TextEditingController proteinController = TextEditingController();
+    TextEditingController fatsController = TextEditingController();
+
+    if (food != null) {
+      foodNameController.text = food.title;
+      caloriesController.text = food.calories.toString();
+      carbsController.text = food.carbs.toString();
+      proteinController.text = food.protein.toString();
+      fatsController.text = food.fats.toString();
+    }
 
     showModalBottomSheet(context: context, builder: (context) {
       return Container(
@@ -106,7 +122,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(primary: Colors.green),
-                  child: const Text("Add"),
+                  child: food == null ? const Text("Add") : const Text("Update"),
                 ),
               ],
             ),
@@ -124,8 +140,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         valueListenable: foodsBox.listenable(),
         builder: (context, Box<Food> box, _) {
           List<Food> foods = box.values.toList().cast<Food>();
-          foods.sort(((a, b) => a.toString().compareTo(b.toString())));
-          
+          foods.sort(((a, b) => a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase())));
+
           return ListView.builder(
             itemCount: foods.length,
             itemBuilder: (context, index) {
@@ -133,7 +149,15 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
               return ListTile(
                 title: Text(food.title),
                 subtitle: Text("${food.calories} cal (P: ${food.protein}, C: ${food.carbs}, F: ${food.fats})"),
-                onTap: () {},
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete_rounded),
+                  onPressed: () {
+                    deleteFood(food);
+                  },
+                ),
+                onTap: () {
+                  openBottomSheet(food);
+                },
               );
             },
           );    
@@ -141,7 +165,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          onAddPressed();
+          openBottomSheet(null);
         },
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
