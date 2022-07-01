@@ -160,26 +160,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         builder: (context, box, _) {
           final foods = box.values.toList().cast<Food>();
 
-          return ListView.builder(
-            itemCount: foods.length,
-            itemBuilder: (context, index) {
-              Food food = foods[index];
-              return ListTile(
-                title: Text(food.title),
-                subtitle: Text("${food.calories} cal (P: ${food.protein}, C: ${food.carbs}, F: ${food.fats})"),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_rounded),
-                  onPressed: () {
-                    deleteFood(food);
-                  },
-                ),
-                onTap: () {
-                  openBottomSheet(food);
-                },
-              );
-            }
-          );
-        },
+          return buildContent(foods);
+        }
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -190,5 +172,33 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         child: const Icon(Icons.add_rounded),
       ),
     );
+  }
+
+  Widget buildContent(List<Food> foods) {
+    if (foods.isEmpty) {
+      return const Center(
+        child: Text("No foods yet."),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: foods.length,
+        itemBuilder: (context, index) {
+          Food food = foods[index];
+          return ListTile(
+            title: Text(food.title),
+            subtitle: Text("${food.calories} cal (P: ${food.protein}, C: ${food.carbs}, F: ${food.fats})"),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete_rounded),
+              onPressed: () {
+                deleteFood(food);
+              },
+            ),
+            onTap: () {
+              openBottomSheet(food);
+            },
+          );
+        }
+      );
+    }
   }
 }
