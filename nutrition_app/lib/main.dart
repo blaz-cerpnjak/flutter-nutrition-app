@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nutrition_app/models/meal/meal.dart';
+import 'package:nutrition_app/models/meal_type/meal_type.dart';
 import 'package:nutrition_app/screens/main_screen.dart';
 import 'package:nutrition_app/theme/theme_constants.dart';
 import 'package:nutrition_app/theme/theme_manager.dart';
@@ -13,7 +15,12 @@ Future<void> main() async {
 
   await Hive.initFlutter();
 
+  Hive.registerAdapter(MealTypeAdapter());
+  Hive.registerAdapter(MealAdapter());
   Hive.registerAdapter(FoodAdapter());
+  
+  await Hive.openBox<MealType>('mealTypesBox');
+  await Hive.openBox<Meal>('mealsBox');
   await Hive.openBox<Food>('foodsBox');
 
   runApp(MyApp());
