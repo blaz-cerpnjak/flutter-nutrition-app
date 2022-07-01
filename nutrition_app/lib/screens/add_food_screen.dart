@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
+import '../db/Boxes.dart';
 import '../models/food/food.dart';
 
 class AddFoodScreen extends StatefulWidget {
@@ -12,28 +14,34 @@ class AddFoodScreen extends StatefulWidget {
 }
 
 class _AddFoodScreenState extends State<AddFoodScreen> {
-  late Box<Food> foodsBox;
-  List<Food> foods = [];
 
   @override
-  void initState() {
-    foodsBox = Hive.box("foods");
-    print(foodsBox.values);
-    super.initState();
+  void dispose() {
+    Hive.close();
+    super.dispose();
+  }
+
+  void updateFood(Food food, String name, double calories, double carbs, double protein, double fats) {
+    food.title = name;
+    food.calories = calories;
+    food.carbs = carbs;
+    food.protein = protein;
+    food.fats = fats;
+
+    food.save();
+  }
+
+  void deleteFood(Food food) {
+    food.delete();
   }
 
   void addFood(String name, double calories, double carbs, double protein, double fats) {
+    final foodsBox = Boxes.getFoodsBox();
+    
     String uuid = Uuid().v4();
-    Food food = Food(id: uuid, title: name, carbs: carbs, protein: protein, fats: fats, calories: calories);
-    foodsBox.put(food.id, food);
-  }
-
-  void updateFood(food) {
-    foodsBox.put(food.id, food);
-  }
-
-  void deleteFood(food) {
-    foodsBox.delete(food.id);
+    final Food food = Food(id: uuid, title: name, carbs: carbs, protein: protein, fats: fats, calories: calories);
+    
+    foodsBox.add(food);
   }
 
   void openBottomSheet(Food? food) {
@@ -112,13 +120,24 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                 ),    
                 ElevatedButton(
                   onPressed: () {
-                    addFood(
-                      foodNameController.text, 
-                      double.parse(caloriesController.text),
-                      double.parse(carbsController.text),
-                      double.parse(proteinController.text),
-                      double.parse(fatsController.text),
-                    );
+                    if (food == null) {
+                      addFood(
+                        foodNameController.text, 
+                        double.parse(caloriesController.text),
+                        double.parse(carbsController.text),
+                        double.parse(proteinController.text),
+                        double.parse(fatsController.text),
+                      );
+                    } else {
+                      updateFood(
+                        food,
+                        foodNameController.text, 
+                        double.parse(caloriesController.text),
+                        double.parse(carbsController.text),
+                        double.parse(proteinController.text),
+                        double.parse(fatsController.text),
+                      );
+                    }
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(primary: Colors.green),
@@ -136,11 +155,10 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: ValueListenableBuilder(
-        valueListenable: foodsBox.listenable(),
-        builder: (context, Box<Food> box, _) {
-          List<Food> foods = box.values.toList().cast<Food>();
-          foods.sort(((a, b) => a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase())));
+      body: ValueListenableBuilder<Box<Food>>(
+        valueListenable: Boxes.getFoodsBox().listenable(),
+        builder: (context, box, _) {
+          final foods = box.values.toList().cast<Food>();
 
           return ListView.builder(
             itemCount: foods.length,
@@ -159,8 +177,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                   openBottomSheet(food);
                 },
               );
-            },
-          );    
+            }
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -173,5 +191,4 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
       ),
     );
   }
-
 }

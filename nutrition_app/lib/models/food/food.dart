@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 part 'food.g.dart';
 
 @HiveType(typeId: 1)
-class Food {
+class Food extends HiveObject {
   Food({
     required this.id,
     required this.title, 
