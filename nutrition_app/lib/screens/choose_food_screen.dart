@@ -103,7 +103,7 @@ class _ChooseFoodScreenState extends State<ChooseFoodScreen> {
                       Text("Fats (g)", style: Theme.of(context).textTheme.bodySmall),
                       Text("${fats}", style: Theme.of(context).textTheme.bodyText1),
                     ],
-                  ),                                
+                  ),
                 ],
               ),
               TextField(

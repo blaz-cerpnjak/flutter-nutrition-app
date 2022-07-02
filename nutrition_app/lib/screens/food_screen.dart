@@ -5,6 +5,7 @@ import 'package:nutrition_app/models/food/food.dart';
 import 'package:nutrition_app/models/meal/meal.dart';
 import 'package:nutrition_app/models/meal_type/meal_type.dart';
 import 'package:nutrition_app/screens/choose_food_screen.dart';
+import 'package:nutrition_app/widgets/meal_info_card.dart';
 import 'package:uuid/uuid.dart';
 
 class FoodScreen extends StatefulWidget {
@@ -50,6 +51,10 @@ class _FoodScreenState extends State<FoodScreen> {
   void addMeal(Meal meal) {
     final mealsBox = Boxes.getMealsBox();
     mealsBox.add(meal);
+  }
+
+  void updateMeal(Meal meal) {
+    meal.save();
   }
 
   Future<void> navigateAndAddSelection(BuildContext context) async {
@@ -166,22 +171,9 @@ class _FoodScreenState extends State<FoodScreen> {
             shrinkWrap: true,
             itemCount: meals.length,
             itemBuilder: (context, index) {
-              return Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(meals[index].food.title),
-                      subtitle: Text(meals[index].quantity.toString()),
-                      trailing: IconButton(
-                        icon: Icon(Icons.edit_rounded), 
-                        onPressed: () {
-
-                        },
-                      ),
-                    ),
-                  ],
-                )
+              return MealInfoCard(
+                meals[index],
+                () => showMealDialog(meals[index], (meal) { updateMeal(meal); })
               );
             }
           ),
@@ -223,5 +215,94 @@ class _FoodScreenState extends State<FoodScreen> {
       );
     }
   }
+
+  Future<void> showMealDialog(Meal meal, onUpdateMeal) => showDialog(
+    context: context,
+    builder: (context) {
+      final TextEditingController _quantityTextController = TextEditingController();
+      _quantityTextController.text = meal.quantity.toString();
+
+      String cals = ((meal.food.calories / 100) * meal.quantity).toStringAsFixed(2);
+      String carbs = ((meal.food.carbs / 100) * meal.quantity).toStringAsFixed(2);
+      String protein = ((meal.food.protein / 100) * meal.quantity).toStringAsFixed(2);
+      String fats = ((meal.food.fats/ 100) * meal.quantity).toStringAsFixed(2);
+
+      return StatefulBuilder(builder: (context, setState) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(meal.food.title),
+              Column(children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Calories (kcal):", style: Theme.of(context).textTheme.bodySmall),
+                      Text("${cals}", style: Theme.of(context).textTheme.bodyText1),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Carbs (g)", style: Theme.of(context).textTheme.bodySmall),
+                      Text("${carbs}", style: Theme.of(context).textTheme.bodyText1),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Protein (g)", style: Theme.of(context).textTheme.bodySmall),
+                      Text("${protein}", style: Theme.of(context).textTheme.bodyText1),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Fats (g)", style: Theme.of(context).textTheme.bodySmall),
+                      Text("${fats}", style: Theme.of(context).textTheme.bodyText1),
+                    ],
+                  ),
+                ],
+              ),
+              TextField(
+                controller: _quantityTextController,
+                decoration: InputDecoration(
+                  labelText: "Quantity (g)",
+                  labelStyle: Theme.of(context).textTheme.bodyText1
+                ),
+                style: Theme.of(context).textTheme.bodyText1,
+                keyboardType: TextInputType.number,
+                onChanged: (quantity) {
+                  setState(() {
+                    cals = quantity;
+                    if (quantity.isNotEmpty) {
+                      meal.quantity = double.parse(quantity);
+                      carbs = ((meal.food.carbs / 100) * double.parse(quantity)).toStringAsFixed(2);
+                      protein = ((meal.food.protein / 100) * double.parse(quantity)).toStringAsFixed(2);
+                      fats = ((meal.food.fats / 100) * double.parse(quantity)).toStringAsFixed(2);
+                    } else {
+                      cals = "?";
+                      carbs = "?";
+                      protein = "?";
+                      fats = "?";
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                onUpdateMeal(meal);
+                Navigator.pop(context);
+              }, 
+              child: const Text("UPDATE")
+            )
+          ],
+        ); 
+      });
+    }
+  );
 
 }
