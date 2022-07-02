@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nutrition_app/screens/add_food_screen.dart';
+import 'package:nutrition_app/screens/choose_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
@@ -54,16 +55,6 @@ class _MainScreenState extends State<MainScreen> {
        break; 
       } 
     });
-  }
-
-  void toggleTheme(ThemeManager themeManager) {
-    if (themeManager.themeMode == ThemeMode.dark) {
-      themeManager.toggleTheme(false);
-      _isDark = false;
-    } else {
-      themeManager.toggleTheme(true);
-      _isDark = true;
-    }
   }
 
   final List<Widget> _screens = const [
@@ -121,10 +112,10 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeManager>(context);
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         backgroundColor: Theme.of(context).backgroundColor,
         elevation: 0,
         leading: IconButton(
@@ -148,7 +139,14 @@ class _MainScreenState extends State<MainScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              toggleTheme(themeProvider);
+              context.read<ThemeManager>().toggleTheme(_isDark);
+              if (context.read<ThemeManager>().themeMode == ThemeMode.dark) {
+                context.read<ThemeManager>().toggleTheme(false);
+                _isDark = false;
+              } else {
+                context.read<ThemeManager>().toggleTheme(true);
+                _isDark = true;
+              }
             }, 
             icon: SvgPicture.asset(
               _isDark ? "assets/icons/light_mode_icon.svg" : "assets/icons/dark_mode_icon.svg",

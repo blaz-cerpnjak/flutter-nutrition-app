@@ -18,24 +18,21 @@ class MealAdapter extends TypeAdapter<Meal> {
     };
     return Meal(
       id: fields[0] as String,
-      foods: (fields[1] as HiveList).castHiveList(),
-      dateTime: fields[2] as DateTime,
-      mealType: fields[3] as MealType,
+      food: fields[1] as Food,
+      quantity: fields[2] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, Meal obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.foods)
+      ..write(obj.food)
       ..writeByte(2)
-      ..write(obj.dateTime)
-      ..writeByte(3)
-      ..write(obj.mealType);
+      ..write(obj.quantity);
   }
 
   @override

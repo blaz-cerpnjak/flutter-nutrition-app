@@ -9,25 +9,21 @@ class Meal extends HiveObject {
 
   Meal({
     required this.id,
-    required this.foods, 
-    required this.dateTime,
-    required this.mealType,
+    required this.food, 
+    required this.quantity,
   });
 
   @HiveField(0)
   String id;
 
   @HiveField(1)
-  HiveList<Food> foods;
+  Food food;
 
   @HiveField(2)
-  DateTime dateTime;
-
-  @HiveField(3)
-  MealType mealType;
+  double quantity;
 
   @override
   String toString() {
-    return '$mealType, $dateTime: $foods';
+    return '$food - $quantity g';
   }
 }
