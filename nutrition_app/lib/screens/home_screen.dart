@@ -1,4 +1,8 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nutrition_app/db/Boxes.dart';
+import 'package:nutrition_app/models/meal/meal.dart';
 import 'package:nutrition_app/widgets/info_row.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -9,9 +13,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeScreen> {
+  List<Meal> getTodaysMeals() {
+    final currentDate = formatDate(DateTime.now(), [dd, '-', mm, '-', yyyy]);
+    final mealsBox = Boxes.getMealsBox();
+    final meals = mealsBox.values.toList().cast<Meal>();
+    return meals.where((meal) => currentDate == formatDate(meal.dateTime, [dd, '-', mm, '-', yyyy])).toList().cast<Meal>();
+  }
+
+  double calcTodaysCals() {
+    final meals = getTodaysMeals();
+    double calories = 0;
+    meals.forEach((meal) {
+      calories += ((meal.food.calories / 100) * meal.quantity);
+    });
+    return calories;
+  }
+
+  double calcNutritionPercentage() {
+    double calories = calcTodaysCals();
+    print(calories);
+    if (calories > 2100) {
+      return 1.0;
+    }
+    return (calories / 2100);
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Padding(
@@ -34,14 +63,19 @@ class _HomeState extends State<HomeScreen> {
                       .copyWith(fontWeight: FontWeight.w300),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 50),
-              child: InfoRow(
-                "Nutrition", 
-                "1000 cal / 2100 cal", 
-                "assets/icons/nutrition_icon.png",
-                Colors.green,
-                0.8
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: ValueListenableBuilder(
+                valueListenable: Boxes.getMealsBox().listenable(),
+                builder: (context, box, _) {
+                  return InfoRow(
+                    "Nutrition", 
+                    "${calcTodaysCals()} / 2100 cal", 
+                    "assets/icons/nutrition_icon.png",
+                    Colors.green,
+                    calcNutritionPercentage(),
+                  );
+                }
               ),
             ),
             const Padding(
