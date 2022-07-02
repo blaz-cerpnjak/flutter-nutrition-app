@@ -21,19 +21,45 @@ class _MealInfoCardState extends State<MealInfoCard> {
 
   @override
   Widget build(BuildContext context) {
+    String cals = ((widget._meal.food.calories / 100) * widget._meal.quantity).toString();
+    String carbs = ((widget._meal.food.carbs / 100) * widget._meal.quantity).toStringAsFixed(2);
+    String protein = ((widget._meal.food.protein / 100) * widget._meal.quantity).toStringAsFixed(2);
+    String fats = ((widget._meal.food.fats/ 100) * widget._meal.quantity).toStringAsFixed(2); 
+
     return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            title: Text(widget._meal.food.title),
-            subtitle: Text(widget._meal.quantity.toString()),
-            trailing: IconButton(
-              icon: const Icon(Icons.edit_rounded), 
-              onPressed: widget._onEditPressed,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget._meal.food.title,
+                  style: Theme.of(context).textTheme.subtitle2,
+                ),
+                Text(
+                  cals.toString(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                )
+              ],
             ),
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "${widget._meal.quantity} g",
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                Text(
+                  "C: $carbs g, P: $protein g, F: $fats g",
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ],
+        ),
       )
     );
   }
