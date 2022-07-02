@@ -11,6 +11,7 @@ class Meal extends HiveObject {
     required this.id,
     required this.food, 
     required this.quantity,
+    required this.dateTime,
   });
 
   @HiveField(0)
@@ -22,8 +23,11 @@ class Meal extends HiveObject {
   @HiveField(2)
   double quantity;
 
+  @HiveField(3)
+  DateTime dateTime;
+
   @override
   String toString() {
-    return '$food - $quantity g';
+    return '$food - $quantity g, $dateTime';
   }
 }

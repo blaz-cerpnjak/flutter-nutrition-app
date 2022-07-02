@@ -20,19 +20,22 @@ class MealAdapter extends TypeAdapter<Meal> {
       id: fields[0] as String,
       food: fields[1] as Food,
       quantity: fields[2] as double,
+      dateTime: fields[3] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, Meal obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.food)
       ..writeByte(2)
-      ..write(obj.quantity);
+      ..write(obj.quantity)
+      ..writeByte(3)
+      ..write(obj.dateTime);
   }
 
   @override

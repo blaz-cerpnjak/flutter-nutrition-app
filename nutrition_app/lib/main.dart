@@ -43,6 +43,7 @@ class _MyAppState extends State<MyApp> {
       ],
       builder: (context, child) { 
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Nutrition App',
           theme: lightTheme,
           darkTheme: darkTheme,

@@ -138,7 +138,8 @@ class _ChooseFoodScreenState extends State<ChooseFoodScreen> {
                 final meal = Meal(
                   id: const Uuid().v4(), 
                   food: food, 
-                  quantity: double.parse(_quantityTextController.text)
+                  quantity: double.parse(_quantityTextController.text),
+                  dateTime: DateTime.now()
                 );
                 Navigator.pop(context);
                 onInsertMeal(meal);

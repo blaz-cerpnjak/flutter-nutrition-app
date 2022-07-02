@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nutrition_app/db/Boxes.dart';
 import 'package:nutrition_app/models/food/food.dart';
@@ -7,6 +8,8 @@ import 'package:nutrition_app/models/meal_type/meal_type.dart';
 import 'package:nutrition_app/screens/choose_food_screen.dart';
 import 'package:nutrition_app/widgets/meal_info_card.dart';
 import 'package:uuid/uuid.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:date_format/date_format.dart';
 
 class FoodScreen extends StatefulWidget {
   const FoodScreen({Key? key}) : super(key: key);
@@ -17,6 +20,7 @@ class FoodScreen extends StatefulWidget {
 
 class _FoodScreenState extends State<FoodScreen> {
   late Box<Meal> mealsBox;
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -55,6 +59,14 @@ class _FoodScreenState extends State<FoodScreen> {
 
   void updateMeal(Meal meal) {
     meal.save();
+  }
+
+  List<Meal> getMeals(DateTime dateTime) {
+    final mealsBox = Boxes.getMealsBox();
+    final meals = mealsBox.values.toList().cast<Meal>();
+    final currentDate = formatDate(dateTime, [dd, '-', mm, '-', yyyy]);
+    final filteredMeals = meals.where((element) => currentDate == formatDate(element.dateTime, [dd, '-', mm, '-', yyyy])).toList();
+    return filteredMeals;
   }
 
   Future<void> navigateAndAddSelection(BuildContext context) async {
@@ -125,12 +137,34 @@ class _FoodScreenState extends State<FoodScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: ValueListenableBuilder<Box<Meal>>(
-          valueListenable: Boxes.getMealsBox().listenable(), 
-          builder: (context, box, _) {
-            final meals = box.values.toList().cast<Meal>();
-            return buildFoodList(meals);
-          }
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Column(
+                children: <Widget>[
+                  DatePicker(
+                    DateTime.now(),
+                    initialSelectedDate: DateTime.now(),
+                    selectionColor: Colors.green,
+                    selectedTextColor: Colors.white,
+                    onDateChange: (date) {
+                      setState(() {
+                        _selectedDate = date;
+                      });
+                    },
+                  ),
+                ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: ValueListenableBuilder<Box<Meal>>(
+                valueListenable: Boxes.getMealsBox().listenable(), 
+                builder: (context, box, _) {
+                  return buildFoodList(getMeals(_selectedDate));
+                }
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -165,6 +199,8 @@ class _FoodScreenState extends State<FoodScreen> {
       );
     } else {
       return ListView(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
         children: [
           ListView.builder(
             scrollDirection: Axis.vertical,
