@@ -1,3 +1,4 @@
+import 'package:date_picker_timeline/extra/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -147,6 +148,9 @@ class _FoodScreenState extends State<FoodScreen> {
                     initialSelectedDate: DateTime.now(),
                     selectionColor: Colors.green,
                     selectedTextColor: Colors.white,
+                    dayTextStyle: defaultDayTextStyle.copyWith(color: Theme.of(context).primaryColor),
+                    monthTextStyle: defaultMonthTextStyle.copyWith(color: Theme.of(context).primaryColor),
+                    dateTextStyle: defaultDateTextStyle.copyWith(color: Theme.of(context).primaryColor),
                     onDateChange: (date) {
                       setState(() {
                         _selectedDate = date;
