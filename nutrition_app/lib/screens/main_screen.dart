@@ -6,6 +6,7 @@ import 'package:nutrition_app/screens/add_food_screen.dart';
 import 'package:nutrition_app/screens/choose_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
+import 'package:nutrition_app/screens/settings_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
 import 'package:nutrition_app/widgets/drawer_menu_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -46,16 +47,14 @@ class _MainScreenState extends State<MainScreen> {
 
   void onItemSelected(int index) {
     setState(() {
+      index < 4 ? _controller.index = index : null;
       _index = index;
       switch(index) { 
-       case 0: { _title = ''; } 
-       break; 
-       case 1: { _title = 'Food'; } 
-       break;
-       case 2: { _title = 'Add Food'; } 
-       break;
-       case 3: { _title = 'Profile'; } 
-       break; 
+       case 0: { _title = ''; } break; 
+       case 1: { _title = 'Food'; } break;
+       case 2: { _title = 'Add Food'; } break;
+       case 3: { _title = 'Profile'; } break; 
+       case 4: { _title = 'Settings'; } break;
       } 
     });
   }
@@ -65,6 +64,14 @@ class _MainScreenState extends State<MainScreen> {
     FoodScreen(),
     AddFoodScreen(),
     UserProfileScreen(),
+  ];
+
+  final List<Widget> _subScreens = const [
+    HomeScreen(),
+    FoodScreen(),
+    AddFoodScreen(),
+    UserProfileScreen(),
+    SettingsScreen(),
   ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -126,11 +133,10 @@ class _MainScreenState extends State<MainScreen> {
       slideWidth: MediaQuery.of(context).size.width * 0.65,
       menuBackgroundColor: Colors.green,
       menuScreen: DrawerMenuScreen(
-        onSelectedItem: (item) { _controller.index = 1; },
+        onSelectedItem: (item) => onItemSelected(item.index),
       ),
       mainScreen: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: true,
           backgroundColor: Theme.of(context).backgroundColor,
           elevation: 0,
           leading: IconButton(
@@ -171,7 +177,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ],
         ),
-        body: PersistentTabView(
+        body: _index < 4 ? PersistentTabView(
           context,
           controller: _controller,
           screens: _screens,
@@ -201,7 +207,7 @@ class _MainScreenState extends State<MainScreen> {
           onItemSelected: (index) {
             onItemSelected(index);
           },
-        ),
+        ) : _subScreens[_index],
       ),
     );
   }

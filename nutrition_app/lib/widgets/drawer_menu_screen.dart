@@ -5,19 +5,24 @@ import 'package:flutter/src/widgets/framework.dart';
 class MenuItem {
   final String title;
   final Icon icon;
+  final int index;
 
-  const MenuItem(this.title, this.icon);
+  const MenuItem(this.title, this.icon, this.index);
 }
 
 class MenuItems {
-  static const screen1 = MenuItem("Profile", Icon(Icons.verified_user_rounded));
-  static const screen2 = MenuItem("Notifications", Icon(Icons.notification_add_rounded));
-  static const screen3 = MenuItem("About Us", Icon(Icons.help_rounded));
+  static const screen1 = MenuItem("Profile", Icon(Icons.person_outline_rounded), 3);
+  static const screen2 = MenuItem("Notifications", Icon(Icons.notifications_none_outlined), 4);
+  static const screen3 = MenuItem("About Us", Icon(Icons.info_outline_rounded), 4);
+  static const screen4 = MenuItem("Help", Icon(Icons.help_outline_rounded), 4);
+  static const screen5 = MenuItem("Settings", Icon(Icons.settings_outlined), 4);
 
   static const all = <MenuItem> [
     screen1,
     screen2,
-    screen3
+    screen3,
+    screen4,
+    screen5,
   ];
 }
 
@@ -38,7 +43,9 @@ class DrawerMenuScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget> [
             const Spacer(),
-            ...MenuItems.all.map((item) => buildMenuItem(context, item)).toList(),
+            ...MenuItems.all.map( 
+              (item) => buildMenuItem(context, item) 
+            ).toList(),
             const Spacer(flex: 2),
           ],
         ),
