@@ -122,6 +122,7 @@ class _MainScreenState extends State<MainScreen> {
       borderRadius: 24,
       angle: -10.0,
       showShadow: true,
+      drawerShadowsBackgroundColor: Theme.of(context).backgroundColor,
       slideWidth: MediaQuery.of(context).size.width * 0.65,
       menuBackgroundColor: Colors.green,
       menuScreen: DrawerMenuScreen(
