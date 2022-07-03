@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_zoom_drawer/config.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:nutrition_app/screens/add_food_screen.dart';
 import 'package:nutrition_app/screens/choose_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
+import 'package:nutrition_app/widgets/drawer_menu_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,7 +67,6 @@ class _MainScreenState extends State<MainScreen> {
     UserProfileScreen(),
   ];
 
-  
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
         PersistentBottomNavBarItem(
@@ -112,80 +114,93 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final zoomDrawerController = ZoomDrawerController();
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: Theme.of(context).backgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          color: Theme.of(context).primaryColor,
-          onPressed: () {},
-          icon: SvgPicture.asset(
-            "assets/icons/menu_icon.svg",
+    return ZoomDrawer(
+      controller: zoomDrawerController,
+      style: DrawerStyle.defaultStyle,
+      borderRadius: 24,
+      angle: -10.0,
+      showShadow: true,
+      slideWidth: MediaQuery.of(context).size.width * 0.65,
+      menuBackgroundColor: Colors.green,
+      menuScreen: DrawerMenuScreen(
+        onSelectedItem: (item) { _controller.index = 1; },
+      ),
+      mainScreen: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: true,
+          backgroundColor: Theme.of(context).backgroundColor,
+          elevation: 0,
+          leading: IconButton(
             color: Theme.of(context).primaryColor,
-            width: 17,
-          )
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _title,
-              style: Theme.of(context).textTheme.subtitle1
-            )
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.read<ThemeManager>().toggleTheme(_isDark);
-              if (context.read<ThemeManager>().themeMode == ThemeMode.dark) {
-                context.read<ThemeManager>().toggleTheme(false);
-                _isDark = false;
-              } else {
-                context.read<ThemeManager>().toggleTheme(true);
-                _isDark = true;
-              }
-            }, 
+            onPressed: () => zoomDrawerController.toggle?.call(),
             icon: SvgPicture.asset(
-              _isDark ? "assets/icons/light_mode_icon.svg" : "assets/icons/dark_mode_icon.svg",
+              "assets/icons/menu_icon.svg",
               color: Theme.of(context).primaryColor,
               width: 17,
-            ),
+            )
           ),
-        ],
-      ),
-      body: PersistentTabView(
-        context,
-        controller: _controller,
-        screens: _screens,
-        items: _navBarsItems(),
-        confineInSafeArea: true,
-        backgroundColor: Theme.of(context).bottomAppBarColor,
-        handleAndroidBackButtonPress: true,
-        resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-        stateManagement: true,
-        hideNavigationBarWhenKeyboardShows: true, 
-        decoration: NavBarDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          colorBehindNavBar: Theme.of(context).bottomAppBarColor,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _title,
+                style: Theme.of(context).textTheme.subtitle1
+              )
+            ],
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                context.read<ThemeManager>().toggleTheme(_isDark);
+                if (context.read<ThemeManager>().themeMode == ThemeMode.dark) {
+                  context.read<ThemeManager>().toggleTheme(false);
+                  _isDark = false;
+                } else {
+                  context.read<ThemeManager>().toggleTheme(true);
+                  _isDark = true;
+                }
+              }, 
+              icon: SvgPicture.asset(
+                _isDark ? "assets/icons/light_mode_icon.svg" : "assets/icons/dark_mode_icon.svg",
+                color: Theme.of(context).primaryColor,
+                width: 17,
+              ),
+            ),
+          ],
         ),
-        popAllScreensOnTapOfSelectedTab: true,
-        popActionScreens: PopActionScreensType.all,
-        itemAnimationProperties: const ItemAnimationProperties( // Navigation Bar's items animation properties.
-          duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
+        body: PersistentTabView(
+          context,
+          controller: _controller,
+          screens: _screens,
+          items: _navBarsItems(),
+          confineInSafeArea: true,
+          backgroundColor: Theme.of(context).bottomAppBarColor,
+          handleAndroidBackButtonPress: true,
+          resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+          stateManagement: true,
+          hideNavigationBarWhenKeyboardShows: true, 
+          decoration: NavBarDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            colorBehindNavBar: Theme.of(context).bottomAppBarColor,
+          ),
+          popAllScreensOnTapOfSelectedTab: true,
+          popActionScreens: PopActionScreensType.all,
+          itemAnimationProperties: const ItemAnimationProperties( // Navigation Bar's items animation properties.
+            duration: Duration(milliseconds: 200),
+            curve: Curves.ease,
+          ),
+          screenTransitionAnimation: const ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
+            animateTabTransition: true,
+            curve: Curves.ease,
+            duration: Duration(milliseconds: 200),
+          ),
+          navBarStyle: NavBarStyle.style12,
+          onItemSelected: (index) {
+            onItemSelected(index);
+          },
         ),
-        screenTransitionAnimation: const ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
-          animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 200),
-        ),
-        navBarStyle: NavBarStyle.style12,
-        onItemSelected: (index) {
-          onItemSelected(index);
-        },
       ),
     );
   }
