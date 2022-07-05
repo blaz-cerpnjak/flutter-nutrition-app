@@ -16,26 +16,27 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   final TextEditingController _dailyCalsController = TextEditingController();
   final TextEditingController _dailyWaterIntakeController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   late double calories;
   late double waterIntake;
+  late String name;
 
   @override
   void initState() {
-    setCalories();
-    setWaterIntake();
+    setData();
     super.initState();
   }
 
-  Future<void> setCalories() async {
+  Future<void> setData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    calories = prefs.getDouble("calories") ?? 2100;
-    _dailyCalsController.text = calories.toString();
-  }
 
-  Future<void> setWaterIntake() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    calories = prefs.getDouble("calories") ?? 2100;
     waterIntake = prefs.getDouble("waterAmount") ?? 3.0;
+    name = prefs.getString('username') ?? '?';
+
+    _dailyCalsController.text = calories.toString();
     _dailyWaterIntakeController.text = waterIntake.toString();
+    _nameController.text = name.toString();
   }
 
   void showSnackbar(BuildContext context, String text) {
@@ -56,6 +57,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         child: Center(
           child: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Name:',
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                  SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: _nameController,
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.center,
+                      decoration: const InputDecoration(border: InputBorder.none),
+                      onSubmitted: (s) {
+                        context.read<Preferences>().setUsername(s);
+                        showSnackbar(context, 'Success');
+                      },
+                    ),
+                  ),
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

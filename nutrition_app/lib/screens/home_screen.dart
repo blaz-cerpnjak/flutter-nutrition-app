@@ -104,9 +104,11 @@ class _HomeState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              "Welcome back, Blaz",
-              style: Theme.of(context).textTheme.headline1
+            Consumer<Preferences>(
+              builder: ((context, value, child) => Text(
+                "Welcome back, ${context.read<Preferences>().username}",
+                style: Theme.of(context).textTheme.headline1
+              )),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
