@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:nutrition_app/providers/preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -26,11 +28,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _dailyCalsController.text = calories.toString();
   }
 
-  Future<void> saveCalories() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setDouble("calories", double.parse(_dailyCalsController.text));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +45,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 style: Theme.of(context).textTheme.bodyText1,
                 keyboardType: TextInputType.number,
                 onSubmitted: (s) {
-                  saveCalories();
+                  context.read<Preferences>().setCalories(double.parse(s));
                 },
               )),
             ],

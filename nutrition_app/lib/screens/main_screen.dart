@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:nutrition_app/providers/preferences.dart';
 import 'package:nutrition_app/screens/add_food_screen.dart';
 import 'package:nutrition_app/screens/choose_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
@@ -34,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
     getTheme();
     super.initState();
   }
-
+  
   Future<void> getTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isDark = prefs.getBool("isDark") ?? false;

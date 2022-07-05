@@ -3,11 +3,13 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nutrition_app/models/meal/meal.dart';
 import 'package:nutrition_app/models/meal_type/meal_type.dart';
+import 'package:nutrition_app/providers/preferences.dart';
 import 'package:nutrition_app/screens/main_screen.dart';
 import 'package:nutrition_app/theme/theme_constants.dart';
 import 'package:nutrition_app/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
 import 'models/food/food.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -40,6 +42,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeManager()),
+        ChangeNotifierProvider(create: (context) => Preferences()),
       ],
       builder: (context, child) { 
         return MaterialApp(

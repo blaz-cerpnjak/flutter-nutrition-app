@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nutrition_app/db/Boxes.dart';
 import 'package:nutrition_app/models/meal/meal.dart';
+import 'package:nutrition_app/providers/preferences.dart';
 import 'package:nutrition_app/widgets/info_row.dart';
-
+import 'package:provider/provider.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeScreen> {
+
   List<Meal> getTodaysMeals() {
     final currentDate = formatDate(DateTime.now(), [dd, '-', mm, '-', yyyy]);
     final mealsBox = Boxes.getMealsBox();
@@ -70,7 +72,7 @@ class _HomeState extends State<HomeScreen> {
                 builder: (context, box, _) {
                   return InfoRow(
                     "Nutrition", 
-                    "${calcTodaysCals()} / 2100 cal", 
+                    "${calcTodaysCals()} / ${context.watch<Preferences>().calories}", 
                     "assets/icons/nutrition_icon.png",
                     Colors.green,
                     calcNutritionPercentage(),
