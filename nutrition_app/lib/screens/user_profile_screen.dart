@@ -28,6 +28,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _dailyCalsController.text = calories.toString();
   }
 
+  void showSnackbar(BuildContext context) {
+    final snackbar = SnackBar(
+      content: const Text('Calories changed successfuly.'),
+      action: SnackBarAction(label: 'OK', onPressed: () {}),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +55,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 keyboardType: TextInputType.number,
                 onSubmitted: (s) {
                   context.read<Preferences>().setCalories(double.parse(s));
+                  showSnackbar(context);
                 },
               )),
             ],
