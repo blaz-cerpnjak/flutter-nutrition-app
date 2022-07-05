@@ -29,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
   String _title = "";
   bool _isDark = false;
   PersistentTabController _controller = PersistentTabController(initialIndex: 0);
+  final _zoomDrawerController = ZoomDrawerController();
 
   @override
   void initState() {
@@ -122,10 +123,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final zoomDrawerController = ZoomDrawerController();
 
     return ZoomDrawer(
-      controller: zoomDrawerController,
+      controller: _zoomDrawerController,
       style: DrawerStyle.defaultStyle,
       borderRadius: 24,
       angle: -10.0,
@@ -142,7 +142,9 @@ class _MainScreenState extends State<MainScreen> {
           elevation: 0,
           leading: IconButton(
             color: Theme.of(context).primaryColor,
-            onPressed: () => zoomDrawerController.toggle?.call(),
+            onPressed: () {
+              _zoomDrawerController.open?.call();
+          },
             icon: SvgPicture.asset(
               "assets/icons/menu_icon.svg",
               color: Theme.of(context).primaryColor,
