@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nutrition_app/models/meal/meal.dart';
 import 'package:nutrition_app/models/meal_type/meal_type.dart';
+import 'package:nutrition_app/models/water/water.dart';
 import 'package:nutrition_app/providers/preferences.dart';
 import 'package:nutrition_app/screens/main_screen.dart';
 import 'package:nutrition_app/theme/theme_constants.dart';
@@ -18,10 +19,12 @@ Future<void> main() async {
   Hive.registerAdapter(MealTypeAdapter());
   Hive.registerAdapter(MealAdapter());
   Hive.registerAdapter(FoodAdapter());
+  Hive.registerAdapter(WaterAdapter());
 
   await Hive.openBox<MealType>('mealTypesBox');
   await Hive.openBox<Meal>('mealsBox');
   await Hive.openBox<Food>('foodsBox');
+  await Hive.openBox<Water>('watersBox');
 
   runApp(const MyApp());
 }

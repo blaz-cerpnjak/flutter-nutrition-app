@@ -5,9 +5,11 @@ class Preferences with ChangeNotifier {
 
   SharedPreferences? _preferences;
   double _calories = 2000.0;
+  double _glasses = 8.0;
   bool _doneLoading = false;
 
   double get calories => _calories;
+  double get glasses => _glasses;
   bool get doneLoading => _doneLoading;
 
   Preferences() {
@@ -16,6 +18,12 @@ class Preferences with ChangeNotifier {
 
   setCalories(double calories) {
     _calories = calories;
+    _saveToPrefs();
+    notifyListeners();
+  }
+
+  setGlasses(double glasses) {
+    _glasses = glasses;
     _saveToPrefs();
     notifyListeners();
   }
@@ -32,12 +40,14 @@ class Preferences with ChangeNotifier {
   _loadFromPrefs() async {
     await _initPrefs();
     _calories = _preferences?.getDouble('calories') ?? 2000.0;
+    _glasses = _preferences?.getDouble('glasses') ?? 8.0;
     notifyListeners();
   }
 
   _saveToPrefs() async {
     await _initPrefs();
     _preferences?.setDouble('calories', _calories);
+    _preferences?.setDouble('glasses', _glasses);
   }
 
 }
