@@ -40,7 +40,7 @@ class Preferences with ChangeNotifier {
   _loadFromPrefs() async {
     await _initPrefs();
     _calories = _preferences?.getDouble('calories') ?? 2000.0;
-    _waterAmount = _preferences?.getDouble('waterAmount') ?? 8.0;
+    _waterAmount = _preferences?.getDouble('waterAmount') ?? 3.0;
     notifyListeners();
   }
 

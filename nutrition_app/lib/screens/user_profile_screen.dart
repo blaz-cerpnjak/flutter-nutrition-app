@@ -22,6 +22,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   void initState() {
     setCalories();
+    setWaterIntake();
     super.initState();
   }
 
