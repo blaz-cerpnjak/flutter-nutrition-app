@@ -5,8 +5,10 @@ class Preferences with ChangeNotifier {
 
   SharedPreferences? _preferences;
   double _calories = 2000.0;
+  bool _doneLoading = false;
 
-  get calories => _calories;
+  double get calories => _calories;
+  bool get doneLoading => _doneLoading;
 
   Preferences() {
     _loadFromPrefs();
@@ -15,6 +17,11 @@ class Preferences with ChangeNotifier {
   setCalories(double calories) {
     _calories = calories;
     _saveToPrefs();
+    notifyListeners();
+  }
+
+  setDoneLoading(bool value) {
+    _doneLoading = value;
     notifyListeners();
   }
 

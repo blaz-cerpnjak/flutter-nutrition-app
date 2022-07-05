@@ -34,10 +34,10 @@ class _HomeState extends State<HomeScreen> {
   double calcNutritionPercentage() {
     double calories = calcTodaysCals();
     print(calories);
-    if (calories > 2100) {
+    if (calories > context.read<Preferences>().calories) {
       return 1.0;
     }
-    return (calories / 2100);
+    return (calories / context.read<Preferences>().calories);
   }
 
   @override
