@@ -28,9 +28,9 @@ class _HomeState extends State<HomeScreen> {
   double calcTodaysCals() {
     final meals = getTodaysMeals();
     double calories = 0;
-    meals.forEach((meal) {
+    for (var meal in meals) {
       calories += ((meal.food.calories / 100) * meal.quantity);
-    });
+    }
     return calories;
   }
 
@@ -52,41 +52,44 @@ class _HomeState extends State<HomeScreen> {
 
   double getWaterAmount() {
     final waters = getTodaysWater();
-    if (waters.length <= 0) return 0.0;
+    if (waters.isEmpty) return 0.0;
     return waters.first.amount;
   }
 
   double calcWaterPercentage() {
     final waterAmount = getWaterAmount();
-    if (waterAmount > context.read<Preferences>().glasses) {
+    if (waterAmount < 0) {
+      return 0.0;
+    }
+    if (waterAmount > context.read<Preferences>().waterAmount) {
       return 1.0;
     }
-    return (waterAmount / context.read<Preferences>().glasses);
+    return (waterAmount / context.read<Preferences>().waterAmount);
   }
 
   Future<void> addWater() async {
     final watersBox = Boxes.getWaterBox();
     
     final waters = getTodaysWater();
-    if (waters.length <= 0) {
+    if (waters.isEmpty) {
       String uuid = const Uuid().v4();
       final Water water = Water(id: uuid, amount: 1, datetime: DateTime.now());
       watersBox.add(water);
     } else {
       final water = waters.first;
-      water.amount += 1;
+      water.amount += 0.250;
       water.save();
     }
   }
 
   Future<void> removeWater() async {
-    final watersBox = Boxes.getWaterBox();
-    
     final waters = getTodaysWater();
-    if (waters.length > 0) {
+    if (waters.isNotEmpty) {
       final water = waters.first;
-      water.amount -= 1;
-      water.save();
+      if (water.amount >= 0.250) {
+        water.amount -= 0.250;
+        water.save();
+      }
     }
   }
 
@@ -137,7 +140,7 @@ class _HomeState extends State<HomeScreen> {
                 builder: (context, box, _) => 
                   InfoRow(
                     "Water", 
-                    "${getWaterAmount()} / ${context.watch<Preferences>().glasses} glasses", 
+                    "${getWaterAmount()} / ${context.watch<Preferences>().waterAmount} liters", 
                     "assets/icons/water_icon.png",
                     Colors.blue,
                     calcWaterPercentage(),
@@ -152,12 +155,12 @@ class _HomeState extends State<HomeScreen> {
         children: [
           SpeedDialChild(
             child: Icon(Icons.remove),
-            label: 'Remove',
+            label: '0.250 L',
             onTap: removeWater
           ),
           SpeedDialChild(
             child: Icon(Icons.add),
-            label: 'Add',
+            label: '0.250 L',
             onTap: addWater
           ),
         ],
