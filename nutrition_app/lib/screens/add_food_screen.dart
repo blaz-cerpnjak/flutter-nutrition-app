@@ -14,6 +14,16 @@ class AddFoodScreen extends StatefulWidget {
 }
 
 class _AddFoodScreenState extends State<AddFoodScreen> {
+  late List<Food> _foods;
+  late List<Food> _filteredFoods;
+
+  @override
+  void initState() {
+    super.initState();
+    _foods = Boxes.getFoodsBox().values.toList().cast<Food>();
+    _filteredFoods = Boxes.getFoodsBox().values.toList().cast<Food>();
+  }
+
   @override
   void dispose() {
     Hive.close();
@@ -21,7 +31,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   }
 
   void updateFood(Food food, String name, double calories, double carbs,
-      double protein, double fats) {
+    double protein, double fats) {
     food.title = name;
     food.calories = calories;
     food.carbs = carbs;
@@ -36,7 +46,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   }
 
   void addFood(
-      String name, double calories, double carbs, double protein, double fats) {
+    String name, double calories, double carbs, double protein, double fats) {
     final foodsBox = Boxes.getFoodsBox();
 
     String uuid = Uuid().v4();
@@ -49,6 +59,22 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         calories: calories);
 
     foodsBox.add(food);
+  }
+
+  void filterFoods(String text) {
+    _filteredFoods.clear();
+    _filteredFoods.addAll(_foods);
+    if (text.isNotEmpty) {
+      setState(() {
+        _filteredFoods.retainWhere((food) {
+          return food.title.toLowerCase().contains(text.toLowerCase());
+        });
+      });
+    } else {
+      setState(() {
+        _filteredFoods;
+      });
+    }
   }
 
   void openBottomSheet(Food? food) {
@@ -160,13 +186,24 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: ValueListenableBuilder<Box<Food>>(
-          valueListenable: Boxes.getFoodsBox().listenable(),
-          builder: (context, box, _) {
-            final foods = box.values.toList().cast<Food>();
-
-            return buildContent(foods);
-          }),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: searchBox(
+              onSearch: (s) => filterFoods(s)
+            ),
+          ),
+          Expanded(
+            child: ValueListenableBuilder<Box<Food>>(
+            valueListenable: Boxes.getFoodsBox().listenable(),
+            builder: (context, box, _) {
+              //final foods = box.values.toList().cast<Food>();
+              return buildContent(_filteredFoods);
+            }),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           openBottomSheet(null);
@@ -175,6 +212,21 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add_rounded),
       ),
+    );
+  }
+
+  Widget searchBox({required Function(String) onSearch}) {
+    return TextField(
+      maxLines: 1,
+      style: Theme.of(context).textTheme.bodyText1,
+      textAlignVertical: TextAlignVertical.center,
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.search_rounded),
+        iconColor: Colors.grey,
+      ),
+      onChanged: (s) => onSearch(s),
+      textInputAction: TextInputAction.search,
+      onSubmitted: (s) => onSearch(s),
     );
   }
 
@@ -190,7 +242,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
             Food food = foods[index];
             return Slidable(
               startActionPane: ActionPane(
-                motion: const ScrollMotion(), 
+                motion: const ScrollMotion(),
                 children: [
                   SlidableAction(
                     onPressed: (context) {
@@ -199,12 +251,14 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                     backgroundColor: Theme.of(context).backgroundColor,
                     foregroundColor: Theme.of(context).primaryColor,
                     icon: Icons.edit_rounded,
-                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(10)
+                    ),
                   ),
                 ],
               ),
               endActionPane: ActionPane(
-                motion: const ScrollMotion(), 
+                motion: const ScrollMotion(),
                 children: [
                   SlidableAction(
                     onPressed: (context) {
@@ -213,7 +267,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                     backgroundColor: Theme.of(context).backgroundColor,
                     foregroundColor: Theme.of(context).primaryColor,
                     icon: Icons.delete_rounded,
-                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
+                    borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(10)),
                   ),
                 ],
               ),
