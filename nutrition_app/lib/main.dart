@@ -91,7 +91,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              CircularProgressIndicator(),
+              CircularProgressIndicator(color: Colors.green),
               SizedBox(height: 20),
               Text('Getting magic ready...'),
             ],

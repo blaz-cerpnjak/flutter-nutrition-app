@@ -1,6 +1,7 @@
 import 'package:date_picker_timeline/extra/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nutrition_app/db/Boxes.dart';
 import 'package:nutrition_app/models/food/food.dart';
@@ -63,6 +64,10 @@ class _FoodScreenState extends State<FoodScreen> {
 
   void updateMeal(Meal meal) {
     meal.save();
+  }
+
+  void deleteMeal(Meal meal) {
+    meal.delete();
   }
 
   List<Meal> getMeals(DateTime dateTime) {
@@ -240,9 +245,39 @@ class _FoodScreenState extends State<FoodScreen> {
             shrinkWrap: true,
             itemCount: meals.length,
             itemBuilder: (context, index) {
-              return MealInfoCard(
-                meals[index],
-                () => showMealDialog(meals[index], (meal) { updateMeal(meal); })
+              return  Slidable(
+                startActionPane: ActionPane(
+                  motion: const ScrollMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) {
+                        showMealDialog(meals[index], (meal) { updateMeal(meal); });
+                      },
+                      backgroundColor: Colors.green,
+                      icon: Icons.edit_rounded,
+                      label: 'Edit',
+                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
+                    )
+                  ],
+                ),
+                endActionPane: ActionPane(
+                  motion: const ScrollMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) {
+                        deleteMeal(meals[index]);
+                      },
+                      backgroundColor: Colors.red,
+                      icon: Icons.delete_rounded,
+                      label: 'Delete',
+                      borderRadius: const BorderRadius.horizontal(right: Radius.circular(10)),
+                    ),
+                  ],
+                ),
+                child: MealInfoCard(
+                  meals[index],
+                  () => showMealDialog(meals[index], (meal) { updateMeal(meal); })
+                ),
               );
             }
           ),
@@ -254,33 +289,6 @@ class _FoodScreenState extends State<FoodScreen> {
             child: const Text("Add Food"),
           ),
         ],
-      ); 
-    }
-  }
-
-  Widget buildContent(List<MealType> mealTypes) {
-    if (mealTypes.isEmpty) {
-      return const Center(
-        child: Text("No meals yet."),
-      );
-    } else {
-      return ListView.builder(
-        itemCount: mealTypes.length,
-        itemBuilder: (context, index) {
-          MealType mealType = mealTypes[index];
-          return ListTile(
-            title: Text(mealType.name),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_rounded),
-              onPressed: () {
-                deleteMealType(mealType);
-              },
-            ),
-            onTap: () {
-              openBottomSheet(mealType);
-            },
-          );
-        }
       );
     }
   }
