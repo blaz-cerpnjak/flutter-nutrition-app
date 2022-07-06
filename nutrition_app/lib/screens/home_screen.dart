@@ -77,7 +77,7 @@ class _HomeState extends State<HomeScreen> {
       watersBox.add(water);
     } else {
       final water = waters.first;
-      water.amount += 0.250;
+      water.amount += context.read<Preferences>().waterStep;
       water.save();
     }
   }
@@ -86,8 +86,8 @@ class _HomeState extends State<HomeScreen> {
     final waters = getTodaysWater();
     if (waters.isNotEmpty) {
       final water = waters.first;
-      if (water.amount >= 0.250) {
-        water.amount -= 0.250;
+      if (water.amount >= context.read<Preferences>().waterStep) {
+        water.amount -= context.read<Preferences>().waterStep;
         water.save();
       }
     }
@@ -159,12 +159,12 @@ class _HomeState extends State<HomeScreen> {
         children: [
           SpeedDialChild(
             child: Icon(Icons.remove),
-            label: '0.250 L',
+            label: '${context.watch<Preferences>().waterStep} L',
             onTap: removeWater
           ),
           SpeedDialChild(
             child: Icon(Icons.add),
-            label: '0.250 L',
+            label: '${context.watch<Preferences>().waterStep} L',
             onTap: addWater
           ),
         ],

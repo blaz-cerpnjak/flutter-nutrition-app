@@ -8,11 +8,13 @@ class Preferences with ChangeNotifier {
   double _waterAmount = 3.0;
   bool _doneLoading = false;
   String _username = '';
+  double _waterStep = 0.250;
 
   double get calories => _calories;
   double get waterAmount => _waterAmount;
   bool get doneLoading => _doneLoading;
   String get username => _username;
+  double get waterStep => _waterStep;
 
   Preferences() {
     _loadFromPrefs();
@@ -40,6 +42,11 @@ class Preferences with ChangeNotifier {
     notifyListeners();
   }
 
+  setWaterStep(double waterStep) {
+    _waterStep = waterStep;
+    notifyListeners();
+  }
+
   _initPrefs() async {
     _preferences ??= await SharedPreferences.getInstance();
   }
@@ -49,6 +56,7 @@ class Preferences with ChangeNotifier {
     _calories = _preferences?.getDouble('calories') ?? 2000.0;
     _waterAmount = _preferences?.getDouble('waterAmount') ?? 3.0;
     _username = _preferences?.getString('username') ?? '';
+    _waterStep = _preferences?.getDouble('waterStep') ?? 0.250;
     notifyListeners();
   }
 
@@ -57,6 +65,7 @@ class Preferences with ChangeNotifier {
     _preferences?.setDouble('calories', _calories);
     _preferences?.setDouble('waterAmount', _waterAmount);
     _preferences?.setString('username', _username);
+    _preferences?.setDouble('waterStep', _waterStep);
   }
 
 }
