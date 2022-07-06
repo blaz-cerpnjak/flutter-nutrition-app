@@ -153,6 +153,8 @@ class _HomeState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: SpeedDial(
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
         icon: Icons.water_drop_rounded,
         children: [
           SpeedDialChild(

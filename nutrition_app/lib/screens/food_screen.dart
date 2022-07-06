@@ -7,6 +7,7 @@ import 'package:nutrition_app/models/food/food.dart';
 import 'package:nutrition_app/models/meal/meal.dart';
 import 'package:nutrition_app/models/meal_type/meal_type.dart';
 import 'package:nutrition_app/screens/choose_food_screen.dart';
+import 'package:nutrition_app/widgets/date_row_picker.dart';
 import 'package:nutrition_app/widgets/meal_info_card.dart';
 import 'package:uuid/uuid.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
@@ -22,6 +23,8 @@ class FoodScreen extends StatefulWidget {
 class _FoodScreenState extends State<FoodScreen> {
   late Box<Meal> mealsBox;
   DateTime _selectedDate = DateTime.now();
+  DateTime _startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+  final DatePickerController _datePickerController = DatePickerController();
 
   @override
   void initState() {
@@ -76,6 +79,7 @@ class _FoodScreenState extends State<FoodScreen> {
       MaterialPageRoute(builder: (context) => const ChooseFoodScreen())
     );
     if (meal != null) {
+      meal.dateTime = _selectedDate;
       addMeal(meal);
     }
   }
@@ -131,21 +135,43 @@ class _FoodScreenState extends State<FoodScreen> {
     });
   }
 
+  void incrementMonth() {
+    setState(() {
+      _selectedDate = DateTime(_selectedDate.year, _selectedDate.month + 1, _selectedDate.day);
+      _datePickerController.animateToDate(_selectedDate);
+      _startDate = DateTime(_selectedDate.year, 1, 1);
+    });
+  }
+
+  void decrementMonth() {
+    setState(() {
+      _selectedDate = DateTime(_selectedDate.year, _selectedDate.month - 1, _selectedDate.day);
+      _datePickerController.animateToDate(_selectedDate);
+      _startDate = DateTime(_selectedDate.year, 1, 1); 
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Column(
                 children: <Widget>[
+                  DateRowPicker(
+                    date: _selectedDate,
+                    onBackPressed: decrementMonth,
+                    onForwardPressed: incrementMonth,
+                  ),
                   DatePicker(
-                    DateTime.now(),
+                    _startDate,
                     initialSelectedDate: DateTime.now(),
+                    controller: _datePickerController,
                     selectionColor: Colors.green,
                     selectedTextColor: Colors.white,
                     dayTextStyle: defaultDayTextStyle.copyWith(color: Theme.of(context).primaryColor),
@@ -191,12 +217,15 @@ class _FoodScreenState extends State<FoodScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget> [
             const Text("No meals yet."),
-            ElevatedButton(
-              onPressed: () {
-                navigateAndAddSelection(context);
-              },
-              style: ElevatedButton.styleFrom(primary: Colors.green),
-              child: const Text("Add Food"),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  navigateAndAddSelection(context);
+                },
+                style: ElevatedButton.styleFrom(primary: Colors.green),
+                child: const Text("Add Food"),
+              ),
             ),
           ],
         ),
