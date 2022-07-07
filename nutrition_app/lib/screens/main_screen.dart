@@ -8,6 +8,7 @@ import 'package:nutrition_app/screens/choose_food_screen.dart';
 import 'package:nutrition_app/screens/food_screen.dart';
 import 'package:nutrition_app/screens/home_screen.dart';
 import 'package:nutrition_app/screens/settings_screen.dart';
+import 'package:nutrition_app/screens/statistics_screen.dart';
 import 'package:nutrition_app/screens/user_profile_screen.dart';
 import 'package:nutrition_app/widgets/drawer_menu_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -74,6 +75,7 @@ class _MainScreenState extends State<MainScreen> {
     AddFoodScreen(),
     UserProfileScreen(),
     SettingsScreen(),
+    StatisticsScreen(),
   ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() {

@@ -65,7 +65,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               prefsItem(
                 title: 'Name', 
                 onSave: (s) {
-                  context.read<Preferences>().setUsername(s);
+                  context
+                    .read<Preferences>()
+                    .setUsername(s);
                   showSnackbar(context, 'Success');
                 },
                 controller: _nameController

@@ -12,9 +12,9 @@ class MenuItem {
 
 class MenuItems {
   static const screen1 = MenuItem("Profile", Icon(Icons.person_outline_rounded), 3);
-  static const screen2 = MenuItem("Notifications", Icon(Icons.notifications_none_outlined), 4);
-  static const screen3 = MenuItem("About Us", Icon(Icons.info_outline_rounded), 4);
-  static const screen4 = MenuItem("Help", Icon(Icons.help_outline_rounded), 4);
+  static const screen2 = MenuItem("Statistics", Icon(Icons.auto_graph_outlined), 5);
+  static const screen3 = MenuItem("Notifications", Icon(Icons.notifications_none_outlined), 4);
+  static const screen4 = MenuItem("About Us", Icon(Icons.info_outline_rounded), 4);
   static const screen5 = MenuItem("Settings", Icon(Icons.settings_outlined), 4);
 
   static const all = <MenuItem> [

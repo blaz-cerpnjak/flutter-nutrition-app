@@ -9,6 +9,7 @@ import 'package:nutrition_app/screens/main_screen.dart';
 import 'package:nutrition_app/theme/theme_constants.dart';
 import 'package:nutrition_app/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/food/food.dart';
 
 Future<void> main() async {
@@ -56,7 +57,7 @@ class _MyAppState extends State<MyApp> {
                   themeMode: context.watch<ThemeManager>().themeMode,
                   home: const MainScreen(),
                 )
-              : LoadingScreen();
+              : const LoadingScreen();
         });
   }
 }
@@ -84,6 +85,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -97,7 +99,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
             ],
           )
         ),
-      )
+      ),
     );
   }
 }

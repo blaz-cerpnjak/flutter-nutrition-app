@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Preferences with ChangeNotifier {
 
   SharedPreferences? _preferences;
+
   double _calories = 2000.0;
   double _waterAmount = 3.0;
   bool _doneLoading = false;
