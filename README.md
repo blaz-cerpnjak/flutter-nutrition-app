@@ -1,4 +1,4 @@
-# Flutter Nutrition App
+# Flutter Nutrition App :green_apple::apple:
 
 Cool Nutrition App made using Flutter & Dart.
 
